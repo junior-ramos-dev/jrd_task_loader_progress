@@ -1,0 +1,7 @@
+support
+test
+examples
+.gitignore
+History.md
+__test__
+jest.config.ts
