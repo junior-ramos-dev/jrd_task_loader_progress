@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2016",
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "dist",
     "lib": [
       "dom",
       "dom.iterable",
@@ -20,8 +23,14 @@
     "noEmit": true,
     "jsx": "react"
   },
+  "types": ["node", "jest", "@testing-library/jest-dom"],
   "include": [
     "src"
   ],
-  "types": ["node", "jest", "@testing-library/jest-dom"],
+  "exclude": [
+    "node_modules",
+    "./dist/**/*", 
+    "./src/**/*.test.ts",
+    "./*.config.ts",
+  ],
 }
