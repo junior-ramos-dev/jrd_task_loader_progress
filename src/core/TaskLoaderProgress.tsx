@@ -63,7 +63,7 @@ interface TaskLoaderProgressProps<T, R> {
   // The interval in milliseconds to execute the request function (default 1000ms)
   fetchInterval?: number;
   // Component children
-  children?: ReactNode;
+  children: ReactNode;
 }
 
 /**
