@@ -95,9 +95,6 @@ const RingProgressBar = () => {
 - **Progress and Buffer Management**: 
   - The component maintains state for `progress`, `buffer`, and `taskId`, updating them based on the response from the `taskLoader` function.
 
-- **Error Handling**: 
-  - Errors that might occur during the data fetching process are logged to the console.
-
 - **Final Task Handling**: 
   - When all tasks are completed, the progress is set to 100, and the `returnData` function is called with the final result after a short delay.
 
