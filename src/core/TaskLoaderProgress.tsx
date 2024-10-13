@@ -124,17 +124,21 @@ export const TaskLoaderProgress = <T, R>(
 
         // Update the taskId and progress for the last task and return the data to parent component
         if (taskId === totalTasks) {
-          setTaskId(taskId - 1);
-          setProgress(100);
-
+          progressRef.current = () => {
+            setTaskId(taskId - 1);
+            setProgress(100);
+          };
           const responseData = response.data;
 
           // Set interval to render progress with value 100 and then return the data
-          setTimeout(() => {
-            window.clearInterval(intervalId);
+          setTimeout(
+            () => {
+              window.clearInterval(intervalId);
 
-            returnData(responseData);
-          }, 1500);
+              returnData(responseData);
+            },
+            props.fetchInterval ? props.fetchInterval + 500 : 1500
+          );
         }
 
         return response;
