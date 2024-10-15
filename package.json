@@ -8,6 +8,12 @@
   "files": [
     "dist"
   ],
+  "author": "Junior Ramos <junior.ramos.dev@gmail.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/junior-ramos-dev/jrd_task_loader_progress"
+  },
   "scripts": {
     "build": "tsup",
     "test": "jest",
@@ -19,8 +25,6 @@
     "progress",
     "loader"
   ],
-  "author": "Junior Ramos <junor.ramos.dev@gmail.com>",
-  "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.25.7",
     "@babel/preset-env": "^7.25.7",

@@ -16,6 +16,7 @@ module.exports = {
     "reportWebVitals.ts",
     "setupTests.ts",
     "index.tsx",
+    "index.ts",
   ],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 };
