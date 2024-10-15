@@ -60,7 +60,7 @@ jobs:
       - name: Push changes
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Fine-grained PAT for GitHub actions
+          GITHUB_TOKEN: ${{ secrets.JRD_ACTION_PAT }} # Fine-grained PAT for GitHub actions
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
