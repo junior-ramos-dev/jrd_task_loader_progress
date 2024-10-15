@@ -1,5 +1,9 @@
 # TaskLoaderProgress (React Component)
 
+- Check a simple use case project [clicking here](https://github.com/junior-ramos-dev/jrd_task_loader_progress_test)
+  
+- Check a real use case example [clicking here](https://github.com/junior-ramos-dev/psn_profile_manager)
+
 The `TaskLoaderProgress` component provides a mechanism to perform recurrent requests to an API endpoint and update the execution progress. It utilizes React's context to share progress information across its children.
 
 ```
