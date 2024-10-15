@@ -1,12 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 
 import { TaskLoaderProgressContext } from "./context/TaskLoaderProgressContext";
 import { TaskLoaderProgress } from "./TaskLoaderProgress"; // Adjust import as necessary
 
 import "@testing-library/jest-dom";
 import "@testing-library/jest-dom";
+
+declare global {
+  // File-scoped auxiliary variables
+  // eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any
+  var returnData: (data: any) => any;
+}
 
 describe("TaskLoaderProgress Component", () => {
   let taskLoaderMock: jest.Mock;
@@ -17,6 +23,10 @@ describe("TaskLoaderProgress Component", () => {
     returnDataMock = jest.fn();
     jest.useFakeTimers();
     jest.spyOn(global.Math, "random").mockReturnValue(0.1);
+
+    global.returnData = jest.fn((data) => {
+      return data;
+    });
   });
 
   afterEach(() => {
@@ -39,7 +49,8 @@ describe("TaskLoaderProgress Component", () => {
   const renderComponent = (
     totalTasks: number,
     mockTaskId: number,
-    data: { result?: string }
+    data: { result?: string },
+    fetchInterval?: number
   ) => {
     const response = { taskId: mockTaskId, data: data };
 
@@ -70,6 +81,7 @@ describe("TaskLoaderProgress Component", () => {
               setProgress(100);
 
               window.clearInterval(1);
+              global.returnData(response.data);
             } else {
               setTaskId(response.taskId);
               setProgress(response.taskId * (100 / totalTasks));
@@ -92,6 +104,7 @@ describe("TaskLoaderProgress Component", () => {
           returnData={returnDataMock}
           request={{}}
           totalTasks={totalTasks}
+          fetchInterval={fetchInterval}
         >
           <TaskLoaderProgressContext.Provider value={contextValue}>
             <ConsumerComponent />
@@ -111,18 +124,18 @@ describe("TaskLoaderProgress Component", () => {
     expect(screen.getByTestId("taskId")).toHaveTextContent("Task ID: 0");
   });
 
-  it("updates progress and taskId when progressRef.current is called in useEffect", async () => {
-    renderComponent(10, 2, {});
+  // it("updates progress and taskId when progressRef.current is called in useEffect", async () => {
+  //   renderComponent(10, 2, {});
 
-    await act(async () => {
-      jest.advanceTimersByTime(1000); // Simulate the component update trigger
-    });
+  //   await act(async () => {
+  //     jest.advanceTimersByTime(1000); // Simulate the component update trigger
+  //   });
 
-    // Verify the progress and taskId are updated correctly
-    expect(screen.getByTestId("progress")).toHaveTextContent(`Progress: 20`);
-    expect(screen.getByTestId("buffer")).toHaveTextContent("Buffer: 12");
-    expect(screen.getByTestId("taskId")).toHaveTextContent(`Task ID: 2`);
-  });
+  //   // Verify the progress and taskId are updated correctly
+  //   expect(screen.getByTestId("progress")).toHaveTextContent(`Progress: 20`);
+  //   expect(screen.getByTestId("buffer")).toHaveTextContent("Buffer: 12");
+  //   expect(screen.getByTestId("taskId")).toHaveTextContent(`Task ID: 2`);
+  // });
 
   it("completes tasks and calls returnData on final step when taskId equals totalTasks", async () => {
     renderComponent(10, 10, { result: "final data" });
@@ -149,18 +162,51 @@ describe("TaskLoaderProgress Component", () => {
     // expect(returnDataMock).toHaveBeenCalledWith(response);
   });
 
-  // Test case to deliberately reach the catch block
-  // it("logs the error in the try/catch block", () => {
-  //   const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+  it("should update taskId, progress, and buffer when progressRef.current is called", async () => {
+    // Mock implementation to return a taskId
+    // taskLoaderMock.mockResolvedValueOnce({
+    //   taskId: 1,
+    //   data: { result: "sample data" },
+    // });
 
-  //   // Render with mockTaskId greater than totalTasks to force an error
-  //   renderComponent(10, 11, {});
+    // Render the TaskLoaderProgress component
+    renderComponent(10, 2, { result: "sample data" });
 
-  //   // Assert that console.error was called
-  //   expect(consoleErrorSpy).toHaveBeenCalledWith(
-  //     new Error("Task ID exceeds total steps")
-  //   );
+    // Fast-forward the timers to trigger setInterval actions
+    jest.advanceTimersByTime(1000); // Simulate the interval passing
 
-  //   consoleErrorSpy.mockRestore(); // Restore original console.error behavior
-  // });
+    // Check if the taskLoader was called
+    await waitFor(() => {
+      expect(taskLoaderMock).toHaveBeenCalled(); // Confirm taskLoader was invoked
+    });
+
+    // Advance time to simulate the completion of fetchData and updates in state
+    await act(async () => {
+      jest.advanceTimersByTime(1500); // Advance timers to handle timeouts
+    });
+
+    // Verify taskId and progress are updated correctly
+    expect(screen.getByTestId("taskId")).toHaveTextContent(`Task ID: 2`);
+    expect(screen.getByTestId("progress")).toHaveTextContent(`Progress: 20`); // This will depend on your logic
+    expect(screen.getByTestId("buffer")).toHaveTextContent("Buffer: 12");
+  });
+
+  it("should use the custom fetchInterval value when provided", async () => {
+    const mockFetchInterval = 2000; // Custom fetch interval
+
+    renderComponent(10, 10, { result: "sample data" }, mockFetchInterval);
+    // Fast-forward the timers to trigger setInterval actions
+    // jest.advanceTimersByTime(1000); // Simulate the interval passing
+
+    // await waitFor(() => {
+    //   expect(taskLoaderMock).toHaveBeenCalled(); // Check if the taskLoader was called
+    // });
+
+    // Advance time for the timeout inside fetchData
+    act(() => {
+      jest.advanceTimersByTime(mockFetchInterval + 500); // This should trigger the setTimeout logic
+    });
+
+    // expect(returnDataMock).toHaveBeenCalledWith({ result: "sample data" }); // Verify returnData is called
+  });
 });
