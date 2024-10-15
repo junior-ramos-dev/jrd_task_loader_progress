@@ -56,7 +56,7 @@ const returnDataFunction = (data) => {
 
 // Usage within a component
 const MyComponent = () => (
-  <TaskLoaderProgress
+  <TaskLoaderProgress<User, IRegisterRequest>
     taskLoader={taskLoaderFunction}
     returnData={returnDataFunction}
     request={{ key1: 'value1' }}

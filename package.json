@@ -1,6 +1,6 @@
 {
   "name": "jrd_task_loader_progress",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Provides a component to handle multi-task requests and show the progress for the client.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
