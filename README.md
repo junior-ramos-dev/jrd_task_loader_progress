@@ -1,4 +1,4 @@
-# TaskLoaderProgress React Component
+# TaskLoaderProgress (React Component)
 
 The `TaskLoaderProgress` component provides a mechanism to perform recurrent requests to an API endpoint and update the execution progress. It utilizes React's context to share progress information across its children.
 
